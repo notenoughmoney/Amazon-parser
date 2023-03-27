@@ -12,7 +12,7 @@ namespace newParser
 {
     class Utils
     {
-        public static string getHTML(string query) {
+        public static string getHTML(string query, int currentPage = 1) {
             WebClient client = new WebClient();
             client.Headers.Add("user-agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:109.0) Gecko/20100101 Firefox/111.0");
             client.Headers.Add("Accept", "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,*/*;q=0.8");
@@ -20,7 +20,6 @@ namespace newParser
             client.Headers.Add("Accept-Language", "ru-RU,ru;q=0.8,en-US;q=0.5,en;q=0.3");
 
             string baseUrl = "https://www.amazon.com/s?k=" + query;
-            int currentPage = 1;
             string url = baseUrl + "&page=" + currentPage;
             Stream data = client.OpenRead(url);
             StreamReader reader = new StreamReader(data);
@@ -36,7 +35,6 @@ namespace newParser
             table.Columns.Add("Author", typeof(string));
             table.Columns.Add("Rating", typeof(string));
             table.Columns.Add("Price", typeof(string));
-            table.Columns.Add("Date", typeof(string));
 
             foreach (Match m in r.Matches(html))
             {
@@ -48,7 +46,6 @@ namespace newParser
                 row[1] = m.Groups[2];
                 row[2] = m.Groups[3];
                 row[3] = m.Groups[4];
-                row[4] = m.Groups[5];
                 table.Rows.Add(row);
 
                 if (gotCount >= amount) { return table; }

@@ -61,12 +61,12 @@ namespace newParser
             // Create some column headers for the data.
             columnheader = new ColumnHeader();
             columnheader.Text = "Название книги";
-            columnheader.Width = 500;
+            columnheader.Width = 600;
             this.listView1.Columns.Add(columnheader);
 
             columnheader = new ColumnHeader();
             columnheader.Text = "Автор";
-            columnheader.Width = 200;
+            columnheader.Width = 300;
             this.listView1.Columns.Add(columnheader);
 
             columnheader = new ColumnHeader();
@@ -80,8 +80,8 @@ namespace newParser
             this.listView1.Columns.Add(columnheader);
 
             columnheader = new ColumnHeader();
-            columnheader.Text = "Дата выхода";
-            columnheader.Width = 200;
+            columnheader.Text = "Ссылка";
+            columnheader.Width = 1;
             this.listView1.Columns.Add(columnheader);
         }
 
