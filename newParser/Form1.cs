@@ -38,11 +38,11 @@ namespace newParser
         private void Form1_Load(object sender, EventArgs e)
         {
             listView1.View = View.Details;
-            listView1.Columns.Add("Название книги", 400);
-            listView1.Columns.Add("Автор", 40);
-            listView1.Columns.Add("Оценка", 40);
-            listView1.Columns.Add("Дата выхода", 40);
-            listView1.Columns.Add("Цена", 40);
+            listView1.Columns.Add("Название книги", 500);
+            listView1.Columns.Add("Автор", 200);
+            listView1.Columns.Add("Оценка", 100);
+            listView1.Columns.Add("Дата выхода", 200);
+            listView1.Columns.Add("Цена", 200);
         }
     }
 }
