@@ -19,8 +19,7 @@ namespace newParser
             client.Headers.Add("Accept-Encoding", "br");
             client.Headers.Add("Accept-Language", "ru-RU,ru;q=0.8,en-US;q=0.5,en;q=0.3");
 
-            string language = query;
-            string baseUrl = "https://www.amazon.com/s?k=" + language;
+            string baseUrl = "https://www.amazon.com/s?k=" + query;
             int currentPage = 1;
             string url = baseUrl + "&page=" + currentPage;
             Stream data = client.OpenRead(url);
@@ -28,7 +27,7 @@ namespace newParser
             return reader.ReadToEnd();
         }
 
-        public static DataTable getData(string html) {
+        public static DataTable getData(string html, int amount = 10) {
             Regex r = new Regex(@"<span.*a-size-base-plus a-color-base a-text-normal[^>]*>(.*?)</span>.*(?:<a.*a-link-normal s-underline-text s-underline-link-text s-link-style[^>]*>|<span.*a-size-base[^>]*>|<span>)([^<]*)(?:</a>|</span>).*<span.*a-size-base[^>]*>(\d.\d)</span>.*([$]\d+\.\d+)");
             int gotCount = 0;
 
@@ -37,6 +36,7 @@ namespace newParser
             table.Columns.Add("Author", typeof(string));
             table.Columns.Add("Rating", typeof(string));
             table.Columns.Add("Price", typeof(string));
+            table.Columns.Add("Date", typeof(string));
 
             foreach (Match m in r.Matches(html))
             {
@@ -48,7 +48,10 @@ namespace newParser
                 row[1] = m.Groups[2];
                 row[2] = m.Groups[3];
                 row[3] = m.Groups[4];
+                row[4] = m.Groups[5];
                 table.Rows.Add(row);
+
+                if (gotCount >= amount) { return table; }
             }
             return table;
         }

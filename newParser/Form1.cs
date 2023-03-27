@@ -9,20 +9,35 @@ using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using static System.Windows.Forms.VisualStyles.VisualStyleElement;
 
 namespace newParser
 {
     public partial class Form1 : Form
     {
+
+        private ListViewColumnSorter lvwColumnSorter;
         public Form1()
         {
             InitializeComponent();
+            lvwColumnSorter = new ListViewColumnSorter();
+            this.listView1.ListViewItemSorter = lvwColumnSorter;
         }
 
         private void button1_Click(object sender, EventArgs e)
         {
+            if (textBox1.Text == "")
+            {
+                MessageBox.Show(
+                    "Вы не ввели название книги!",
+                    "Ошибка",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Error);
+                return;
+            }
+
             string html = Utils.getHTML(textBox1.Text);
-            DataTable table = Utils.getData(html);
+            DataTable table = (textBox2.Text == "") ? Utils.getData(html) : Utils.getData(html, Convert.ToInt32(textBox2.Text));
 
             foreach (DataRow row in table.Rows)
             {
@@ -37,12 +52,63 @@ namespace newParser
 
         private void Form1_Load(object sender, EventArgs e)
         {
+            ColumnHeader columnheader;// Used for creating column headers.
+            ListViewItem listviewitem;// Used for creating listview items.
+
+            // Ensure that the view is set to show details.
             listView1.View = View.Details;
-            listView1.Columns.Add("Название книги", 500);
-            listView1.Columns.Add("Автор", 200);
-            listView1.Columns.Add("Оценка", 100);
-            listView1.Columns.Add("Дата выхода", 200);
-            listView1.Columns.Add("Цена", 200);
+
+            // Create some column headers for the data.
+            columnheader = new ColumnHeader();
+            columnheader.Text = "Название книги";
+            columnheader.Width = 500;
+            this.listView1.Columns.Add(columnheader);
+
+            columnheader = new ColumnHeader();
+            columnheader.Text = "Автор";
+            columnheader.Width = 200;
+            this.listView1.Columns.Add(columnheader);
+
+            columnheader = new ColumnHeader();
+            columnheader.Text = "Оценка";
+            columnheader.Width = 100;
+            this.listView1.Columns.Add(columnheader);
+
+            columnheader = new ColumnHeader();
+            columnheader.Text = "Цена";
+            columnheader.Width = 200;
+            this.listView1.Columns.Add(columnheader);
+
+            columnheader = new ColumnHeader();
+            columnheader.Text = "Дата выхода";
+            columnheader.Width = 200;
+            this.listView1.Columns.Add(columnheader);
+        }
+
+        private void listView1_ColumnClick(object sender, ColumnClickEventArgs e)
+        {
+            // Determine if clicked column is already the column that is being sorted.
+            if (e.Column == lvwColumnSorter.SortColumn)
+            {
+                // Reverse the current sort direction for this column.
+                if (lvwColumnSorter.Order == SortOrder.Ascending)
+                {
+                    lvwColumnSorter.Order = SortOrder.Descending;
+                }
+                else
+                {
+                    lvwColumnSorter.Order = SortOrder.Ascending;
+                }
+            }
+            else
+            {
+                // Set the column number that is to be sorted; default to ascending.
+                lvwColumnSorter.SortColumn = e.Column;
+                lvwColumnSorter.Order = SortOrder.Ascending;
+            }
+
+            // Perform the sort with these new sort options.
+            this.listView1.Sort();
         }
     }
 }
