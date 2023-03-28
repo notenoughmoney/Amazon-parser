@@ -51,7 +51,10 @@ namespace newParser
                     row[0] = m.Groups[1];
                     row[1] = m.Groups[2];
                     row[2] = m.Groups[3];
-                    row[3] = m.Groups[4];
+                    row[3] = m.Groups[4]
+                        .ToString()
+                        .Replace(".", ",")
+                        .Substring(1);
                     table.Rows.Add(row);
 
                     if (gotCount >= amount) { return table; }
