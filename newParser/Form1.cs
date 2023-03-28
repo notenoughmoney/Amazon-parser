@@ -75,7 +75,8 @@ namespace newParser
             this.listView1.Columns.Add(columnheader);
 
             columnheader = new ColumnHeader();
-            columnheader.Text = "Цена";
+            columnheader.Tag = "Float";
+            columnheader.Text = "Цена, $";
             columnheader.Width = 200;
             this.listView1.Columns.Add(columnheader);
 

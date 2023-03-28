@@ -34,7 +34,7 @@ namespace newParser
             table.Columns.Add("Name", typeof(string));
             table.Columns.Add("Author", typeof(string));
             table.Columns.Add("Rating", typeof(string));
-            table.Columns.Add("Price", typeof(string));
+            table.Columns.Add("Price", typeof(float));
 
             foreach (Match m in r.Matches(html))
             {
@@ -45,7 +45,10 @@ namespace newParser
                 row[0] = m.Groups[1];
                 row[1] = m.Groups[2];
                 row[2] = m.Groups[3];
-                row[3] = m.Groups[4];
+                row[3] = m.Groups[4]
+                    .ToString()
+                    .Replace(".", ",")
+                    .Substring(1);
                 table.Rows.Add(row);
 
                 if (gotCount >= amount) { return table; }
