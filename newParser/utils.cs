@@ -36,17 +36,17 @@ namespace newParser
             table.Columns.Add("Name", typeof(string));
             table.Columns.Add("Author", typeof(string));
             table.Columns.Add("Rating", typeof(string));
-            table.Columns.Add("Price", typeof(string));
+            table.Columns.Add("Price", typeof(float));
 
             while (gotCount < amount)
-            {
-                string html = await getHTML(query, currentPage);
-
-                foreach (Match m in r.Matches(html).Cast<Match>())
+            { 
+                string html = await getHTML(query, currentPage)
+                
+                foreach (Match m in r.Matches(html))
                 {
                     gotCount++;
                     DataRow row;
-
+            
                     row = table.NewRow();
                     row[0] = m.Groups[1];
                     row[1] = m.Groups[2];

@@ -54,21 +54,40 @@ public class ListViewColumnSorter : IComparer
         // Compare the two items
         compareResult = ObjectCompare.Compare(listviewX.SubItems[ColumnToSort].Text, listviewY.SubItems[ColumnToSort].Text);
 
-        // Calculate correct return value based on object comparison
-        if (OrderOfSort == SortOrder.Ascending)
+        if (listviewX.ListView.Columns[ColumnToSort].Tag == null)
         {
-            // Ascending sort is selected, return normal result of compare operation
-            return compareResult;
+            listviewX.ListView.Columns[ColumnToSort].Tag = "Text";
         }
-        else if (OrderOfSort == SortOrder.Descending)
+        if (listviewX.ListView.Columns[ColumnToSort].Tag.ToString() == "Float")
         {
-            // Descending sort is selected, return negative result of compare operation
-            return (-compareResult);
-        }
-        else
-        {
-            // Return '0' to indicate they are equal
-            return 0;
+            float fl1 = float.Parse(listviewX.SubItems[ColumnToSort].Text);
+            float fl2 = float.Parse(listviewY.SubItems[ColumnToSort].Text);
+
+            if (Order == SortOrder.Ascending)
+            {
+                return fl1.CompareTo(fl2);
+            }
+            else
+            {
+                return fl2.CompareTo(fl1);
+            }
+        } else { 
+            // Calculate correct return value based on object comparison
+            if (OrderOfSort == SortOrder.Ascending)
+            {
+                // Ascending sort is selected, return normal result of compare operation
+                return compareResult;
+            }
+            else if (OrderOfSort == SortOrder.Descending)
+            {
+                // Descending sort is selected, return negative result of compare operation
+                return (-compareResult);
+            }
+            else
+            {
+                // Return '0' to indicate they are equal
+                return 0;
+            }
         }
     }
 
