@@ -24,7 +24,7 @@ namespace newParser
             this.listView1.ListViewItemSorter = lvwColumnSorter;
         }
 
-        private void button1_Click(object sender, EventArgs e)
+        private async void button1_Click(object sender, EventArgs e)
         {
             if (textBox1.Text == "")
             {
@@ -36,8 +36,10 @@ namespace newParser
                 return;
             }
 
-            string html = Utils.getHTML(textBox1.Text);
-            DataTable table = (textBox2.Text == "") ? Utils.getData(html) : Utils.getData(html, Convert.ToInt32(textBox2.Text));
+            this.button1.Enabled = false;
+
+            string query = textBox1.Text;
+            DataTable table = (textBox2.Text == "") ? await Utils.getData(query) : await Utils.getData(query, Convert.ToInt32(textBox2.Text));
 
             foreach (DataRow row in table.Rows)
             {
@@ -48,6 +50,8 @@ namespace newParser
                 }
                 listView1.Items.Add(item);
             }
+
+            this.button1.Enabled = true;
         }
 
         private void Form1_Load(object sender, EventArgs e)

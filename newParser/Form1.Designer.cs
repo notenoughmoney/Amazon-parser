@@ -30,9 +30,9 @@ namespace newParser
         private void InitializeComponent()
         {
             this.textBox1 = new System.Windows.Forms.TextBox();
+            this.textBox2 = new System.Windows.Forms.TextBox();
             this.button1 = new System.Windows.Forms.Button();
             this.listView1 = new System.Windows.Forms.ListView();
-            this.textBox2 = new System.Windows.Forms.TextBox();
             this.SuspendLayout();
             // 
             // textBox1
@@ -44,13 +44,22 @@ namespace newParser
             this.textBox1.Size = new System.Drawing.Size(734, 27);
             this.textBox1.TabIndex = 0;
             // 
+            // textBox2
+            // 
+            this.textBox2.Location = new System.Drawing.Point(777, 17);
+            this.textBox2.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
+            this.textBox2.Name = "textBox2";
+            this.textBox2.PlaceholderText = "Кол-во";
+            this.textBox2.Size = new System.Drawing.Size(176, 27);
+            this.textBox2.TabIndex = 1;
+            // 
             // button1
             // 
             this.button1.Location = new System.Drawing.Point(992, 15);
             this.button1.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.button1.Name = "button1";
             this.button1.Size = new System.Drawing.Size(227, 31);
-            this.button1.TabIndex = 1;
+            this.button1.TabIndex = 2;
             this.button1.Text = "Найти";
             this.button1.UseVisualStyleBackColor = true;
             this.button1.Click += new System.EventHandler(this.button1_Click);
@@ -63,18 +72,9 @@ namespace newParser
             this.listView1.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.listView1.Name = "listView1";
             this.listView1.Size = new System.Drawing.Size(1205, 628);
-            this.listView1.TabIndex = 2;
+            this.listView1.TabIndex = 3;
             this.listView1.UseCompatibleStateImageBehavior = false;
             this.listView1.ColumnClick += new System.Windows.Forms.ColumnClickEventHandler(this.listView1_ColumnClick);
-            // 
-            // textBox2
-            // 
-            this.textBox2.Location = new System.Drawing.Point(777, 17);
-            this.textBox2.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
-            this.textBox2.Name = "textBox2";
-            this.textBox2.PlaceholderText = "Кол-во";
-            this.textBox2.Size = new System.Drawing.Size(176, 27);
-            this.textBox2.TabIndex = 3;
             // 
             // Form1
             // 
