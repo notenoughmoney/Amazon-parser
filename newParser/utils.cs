@@ -39,8 +39,8 @@ namespace newParser
             table.Columns.Add("Price", typeof(float));
 
             while (gotCount < amount)
-            { 
-                string html = await getHTML(query, currentPage)
+            {
+                string html = await getHTML(query, currentPage);
                 
                 foreach (Match m in r.Matches(html))
                 {
