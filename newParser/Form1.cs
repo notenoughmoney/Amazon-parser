@@ -115,5 +115,20 @@ namespace newParser
             // Perform the sort with these new sort options.
             this.listView1.Sort();
         }
+
+        private void listView1_MouseClick(object sender, MouseEventArgs e)
+        {
+            for (int i = 0; i < listView1.Items.Count; i++)
+            {
+                var rectangle = listView1.GetItemRect(i);
+                if (rectangle.Contains(e.Location))
+                {
+                    String link = listView1.Items[i].SubItems[0].Text;
+                    //String link = listView1.GetItemAt(0, i).Text;
+                    MessageBox.Show(link);
+                    return;
+                }
+            }
+        }
     }
 }
