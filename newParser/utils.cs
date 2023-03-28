@@ -27,10 +27,35 @@ namespace newParser
             return await reader.ReadToEndAsync();
         }
 
-        public static async Task<DataTable> getData(string query, int amount = 10) {
+        private static async Task<MatchCollection> getMatches(string html, Regex r)
+        {
+            return await Task.Run(() => r.Matches(html));
+        }
+
+        private static async Task<MatchCollection> parse(string query, int page, Regex r)
+        {
+            string html = await getHTML(query, page);
+
+            return await getMatches(html, r);
+        }
+
+        public static async Task<DataTable> getData(string query) {
+
             Regex r = new(@"<a.*a-link-normal s-underline-text s-underline-link-text s-link-style a-text-normal.*href=[^\s](.*)""><span.*a-size-base-plus a-color-base a-text-normal[^>]*>(.*?)</span>.*(?:<a.*a-link-normal s-underline-text s-underline-link-text s-link-style[^>]*>|<span.*a-size-base[^>]*>|<span>)([^<]*)(?:</a>|</span>).*<span.*a-size-base[^>]*>(\d.\d)</span>.*([$]\d+\.\d+)");
-            int gotCount = 0;
+            Regex pageFinder = new(@"s-pagination-item[^>]*>(\d*)");
+
             int currentPage = 1;
+            int lastPage = -1;
+
+            string html = await getHTML(query, currentPage);
+
+            foreach (Match m in pageFinder.Matches(html).Reverse())
+            {
+                if (int.TryParse(m.Groups[1].ToString(), out lastPage))
+                {
+                    break;
+                }
+            }
 
             DataTable table = new();
             table.Columns.Add("Name", typeof(string));
@@ -38,13 +63,37 @@ namespace newParser
             table.Columns.Add("Rating", typeof(string));
             table.Columns.Add("Price", typeof(float));
 
-            while (gotCount < amount)
+            foreach(Match m in await getMatches(html, r))
             {
-                string html = await getHTML(query, currentPage);
-                
-                foreach (Match m in r.Matches(html))
+                DataRow row;
+
+                string bookUrl = "https://www.amazon.com" + m.Groups[1];
+
+                row = table.NewRow();
+
+                row[0] = m.Groups[2];
+                row[1] = m.Groups[3];
+                row[2] = m.Groups[4];
+                row[3] = m.Groups[5]
+                    .ToString()
+                    .Replace(".", ",")
+                    .Substring(1);
+                table.Rows.Add(row);
+            }
+
+            List<Task<MatchCollection>> tasks = new List<Task<MatchCollection>>();
+
+            while (currentPage <= lastPage)
+            {
+                currentPage++;
+                Task<MatchCollection> task = parse(query, currentPage, r);
+                tasks.Add(task);
+            }
+
+            foreach (MatchCollection c in await Task.WhenAll(tasks))
+            {
+                foreach(Match m in c)
                 {
-                    gotCount++;
                     DataRow row;
 
                     string bookUrl = "https://www.amazon.com" + m.Groups[1];
@@ -59,11 +108,7 @@ namespace newParser
                         .Replace(".", ",")
                         .Substring(1);
                     table.Rows.Add(row);
-
-                    if (gotCount >= amount) { return table; }
                 }
-
-                currentPage++;
             }
 
             return table;

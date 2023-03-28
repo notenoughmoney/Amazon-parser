@@ -39,7 +39,7 @@ namespace newParser
             this.button1.Enabled = false;
 
             string query = textBox1.Text;
-            DataTable table = (textBox2.Text == "") ? await Utils.getData(query) : await Utils.getData(query, Convert.ToInt32(textBox2.Text));
+            DataTable table = await Utils.getData(query);
 
             foreach (DataRow row in table.Rows)
             {
