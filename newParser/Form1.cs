@@ -29,7 +29,7 @@ namespace newParser
 
         private async void button1_Click(object sender, EventArgs e)
         {
-            if (textBox1.Text == "")
+            if (string.IsNullOrWhiteSpace(textBox1.Text))
             {
                 MessageBox.Show(
                     "Вы не ввели название книги!",
