@@ -65,6 +65,7 @@ namespace newParser
             listView1.TabIndex = 3;
             listView1.UseCompatibleStateImageBehavior = false;
             listView1.ColumnClick += listView1_ColumnClick;
+            listView1.MouseClick += listView1_MouseClick;
             // 
             // Form1
             // 

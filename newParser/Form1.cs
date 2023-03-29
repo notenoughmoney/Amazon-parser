@@ -2,9 +2,12 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
+using System.Diagnostics;
 using System.Drawing;
 using System.Linq;
 using System.Net;
+using System.Runtime.InteropServices;
+using System.Security.Policy;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
@@ -44,10 +47,11 @@ namespace newParser
             foreach (DataRow row in table.Rows)
             {
                 ListViewItem item = new ListViewItem(row[0].ToString());
-                for (int i = 1; i < table.Columns.Count; i++)
+                for (int i = 1; i < table.Columns.Count - 1; i++)
                 {
                     item.SubItems.Add(row[i].ToString());
                 }
+                item.Tag = row[4].ToString();
                 listView1.Items.Add(item);
             }
 
@@ -123,9 +127,32 @@ namespace newParser
                 var rectangle = listView1.GetItemRect(i);
                 if (rectangle.Contains(e.Location))
                 {
-                    String link = listView1.Items[i].SubItems[0].Text;
-                    //String link = listView1.GetItemAt(0, i).Text;
-                    MessageBox.Show(link);
+                    String link = listView1.Items[i].Tag.ToString();
+                    try
+                    {
+                        Process.Start(link);
+                    }
+                    catch
+                    {
+                        // hack because of this: https://github.com/dotnet/corefx/issues/10361
+                        if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
+                        {
+                            link = link.Replace("&", "^&");
+                            Process.Start(new ProcessStartInfo(link) { UseShellExecute = true });
+                        }
+                        else if (RuntimeInformation.IsOSPlatform(OSPlatform.Linux))
+                        {
+                            Process.Start("xdg-open", link);
+                        }
+                        else if (RuntimeInformation.IsOSPlatform(OSPlatform.OSX))
+                        {
+                            Process.Start("open", link);
+                        }
+                        else
+                        {
+                            throw;
+                        }
+                    }
                     return;
                 }
             }

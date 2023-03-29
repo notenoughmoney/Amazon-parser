@@ -42,14 +42,14 @@ namespace newParser
         public static async Task<DataTable> getData(string query) {
 
             Regex r = new(@"<a.*a-link-normal s-underline-text s-underline-link-text s-link-style a-text-normal.*href=[^\s](.*)""><span.*a-size-base-plus a-color-base a-text-normal[^>]*>(.*?)</span>.*(?:<a.*a-link-normal s-underline-text s-underline-link-text s-link-style[^>]*>|<span.*a-size-base[^>]*>|<span>)([^<]*)(?:</a>|</span>).*<span.*a-size-base[^>]*>(\d.\d)</span>.*([$]\d+\.\d+)");
-            Regex pageFinder = new(@"s-pagination-item[^>]*>(\d*)");
+            Regex pageFinder = new(@"s-pagination-item[^>]*>(\d*)", RegexOptions.RightToLeft);
 
             int currentPage = 1;
             int lastPage = -1;
 
             string html = await getHTML(query, currentPage);
 
-            foreach (Match m in pageFinder.Matches(html).Reverse())
+            foreach (Match m in pageFinder.Matches(html))
             {
                 if (int.TryParse(m.Groups[1].ToString(), out lastPage))
                 {
@@ -62,8 +62,11 @@ namespace newParser
             table.Columns.Add("Author", typeof(string));
             table.Columns.Add("Rating", typeof(string));
             table.Columns.Add("Price", typeof(float));
+            table.Columns.Add(new DataColumn("Url"));
 
-            foreach(Match m in await getMatches(html, r))
+            MatchCollection matches = await getMatches(html, r);
+
+            foreach (Match m in matches.Cast<Match>())
             {
                 DataRow row;
 
@@ -78,8 +81,13 @@ namespace newParser
                     .ToString()
                     .Replace(".", ",")
                     .Substring(1);
+                row[4] = bookUrl;
+                
                 table.Rows.Add(row);
+               
             }
+
+
 
             List<Task<MatchCollection>> tasks = new List<Task<MatchCollection>>();
 
@@ -90,7 +98,9 @@ namespace newParser
                 tasks.Add(task);
             }
 
-            foreach (MatchCollection c in await Task.WhenAll(tasks))
+            MatchCollection[] arrayMatches = await Task.WhenAll(tasks);
+
+            foreach (MatchCollection c in arrayMatches)
             {
                 foreach(Match m in c)
                 {
